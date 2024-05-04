@@ -1,0 +1,29 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<!--@BeforeSuite-->
+<suite name="Suite1" verbose="1">
+    <!--@BeforeTest-->
+    <test name="Regression 1">
+        <!--@BeforeClass-->
+        <classes>
+            <!--@BeforeMethod-->
+            <class name="org.prog.testng.NGTests"/>
+            <class name="org.prog.testng.NGTests3"/>
+            <!--@AfterMethod-->
+        </classes>
+        <!--@AfterClass-->
+    </test>
+    <!--@AfterTest-->
+    <!--@BeforeTest-->
+    <test name="Regression 2">
+        <!--@BeforeClass-->
+        <classes>
+            <!--@BeforeMethod-->
+            <class name="org.prog.testng.NGTests2"/>
+            <!--@AfterMethod-->
+        </classes>
+        <!--@AfterClass-->
+    </test>
+    <!--@AfterTest-->
+</suite>
+        <!--@AfterSuite-->
