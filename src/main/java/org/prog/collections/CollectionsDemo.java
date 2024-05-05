@@ -9,12 +9,6 @@ import java.util.Set;
 
 public class CollectionsDemo {
 
-    /**
-     * HOMEWORK 3:
-     * using this code print colors and owner names of all cars which plateNumber has 001
-     * @param args
-     */
-
     public static void main(String[] args) {
         Map<String, Set<Car>> ownedCars = new HashMap<>();
 
@@ -46,7 +40,9 @@ public class CollectionsDemo {
         for (String key : keySet) {
             Set<Car> cars = ownedCars.get(key);
             for (Car c : cars) {
-                System.out.println(c.color);
+                if (c.plateNumber.endsWith("001")) {
+                    System.out.println("Owner: " + key + ", Color: " + c.color);
+                }
             }
         }
     }
