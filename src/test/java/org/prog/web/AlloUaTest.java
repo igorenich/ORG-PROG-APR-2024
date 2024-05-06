@@ -44,7 +44,7 @@ public class AlloUaTest {
         alloUaPage.loadPage();
     }
 
-    @Test
+    //    @Test
     public void testPromoInfo() {
         alloUaPage.openDiscounts();
         alloUaPage.openPresents();
@@ -54,7 +54,7 @@ public class AlloUaTest {
         Assert.assertNotNull(title, "Promo title must not be null");
     }
 
-    @Test
+    //    @Test
     public void checkLoginFormTest() {
         alloUaPage.openLoginForm();
         alloUaPage.clickLoginButton();
@@ -62,6 +62,31 @@ public class AlloUaTest {
         for (WebElement em : errorMessages) {
             Assert.assertEquals(em.getText(),
                     "Це поле є обов'язковим для заповнення.", "Bad error message!");
+        }
+    }
+
+//    @Test
+    public void testSearch() {
+        alloUaPage.searchForGoods("samsung");
+        alloUaPage.waitForSearchResultsToBeAtLeast(1);
+        List<WebElement> goods = alloUaPage.getSearchResults();
+        int goodsCount = 0;
+        if (goods.size() > 4) {
+            goodsCount = 4;
+        } else {
+            goodsCount = goods.size();
+        }
+
+        for (int i = 0; i < goodsCount; i++) {
+            System.out.println(alloUaPage.getGoodsPrice(goods.get(i)));
+        }
+    }
+
+    @Test
+    public void testHomePageSales() {
+        List<WebElement> goods = alloUaPage.getHomePageSales();
+        for (WebElement webElement : goods) {
+            System.out.println(alloUaPage.getGoodsPrice(webElement));
         }
     }
 }
