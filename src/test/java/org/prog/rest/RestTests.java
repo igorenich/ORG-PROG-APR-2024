@@ -23,7 +23,7 @@ public class RestTests {
         RequestSpecification requestSpecification = RestAssured.given();
         requestSpecification.baseUri("https://randomuser.me/");
         requestSpecification.basePath("api/");
-        requestSpecification.queryParam("inc", "gender,name,nat");
+        requestSpecification.queryParam("inc", "gender,name,nat,id");
 //TODO: UNCOMMENT >>>> requestSpecification.queryParam("inc", "gender,name,nat,location");
         requestSpecification.queryParam("noinfo");
 
