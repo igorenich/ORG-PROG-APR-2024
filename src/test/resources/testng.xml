@@ -1,9 +1,9 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
 <suite name="Prog" verbose="1">
-    <test name="All UA Tests">
+    <test name="Google Tests">
         <classes>
-            <class name="org.prog.web.AlloUaTest"/>
+            <class name="org.prog.cucumber.CucumberRunner"/>
         </classes>
     </test>
 </suite>
