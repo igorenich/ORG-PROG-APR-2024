@@ -29,7 +29,7 @@ public class DBSteps {
 
             DriverManager.registerDriver(new Driver());
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/db", "user", "password");
+                    "jdbc:mysql://mysql-db-1:3306/db", "user", "password");
 
             statement = connection.createStatement();
 
@@ -65,7 +65,7 @@ public class DBSteps {
         try {
             DriverManager.registerDriver(new Driver());
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/db", "user", "password");
+                    "jdbc:mysql://mysql-db-1:3306/db", "user", "password");
 
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(SELECT_RANDOM);

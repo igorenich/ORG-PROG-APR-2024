@@ -26,7 +26,7 @@ public class CucumberRunner extends AbstractTestNGCucumberTests {
     @BeforeSuite
     public void setUp() throws MalformedURLException {
         CucumberRunner.driver = new RemoteWebDriver(
-                new URL("http://localhost:4444/wd/hub"), remoteOptions());
+                new URL("http://selenoid-selenoid-1:4444/wd/hub"), remoteOptions());
         WebSteps.googlePage = new GooglePage(driver);
         driver.manage().window().maximize();
     }

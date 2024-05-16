@@ -1,8 +1,9 @@
 # BEFORE YOU START:
 #  docker network create selenoid
-#  docker network connect selenoid [containers]
-# docker network ps
+# docker network ls
 # docker network inspect [NETWORK ID]
+# docker ps
+#  docker network connect selenoid [containers]
 #  docker pull selenoid/firefox:latest
 #  docker pull selenoid/chrome:latest
 #  docker pull selenoid/video-recorder:latest-release
