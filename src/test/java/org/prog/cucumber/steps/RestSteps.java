@@ -4,26 +4,26 @@ import io.cucumber.java.en.Given;
 import io.restassured.RestAssured;
 import org.prog.dto.PersonDto;
 import org.prog.dto.ResponseDto;
+import org.prog.util.DataHolder;
 import org.testng.Assert;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 
 public class RestSteps {
 
-    public static List<PersonDto> randomPersons;
-
-    @Given("i request random people from randomuser.me")
-    public void requestRandomPeople() {
+    @Given("i request {int} random people from randomuser.me as {string}")
+    public void requestRandomPeople(int amount, String alias) {
         ResponseDto responseDto = RestAssured.given()
                 .baseUri("https://randomuser.me/")
                 .basePath("api/")
                 .queryParam("inc", "gender,name,nat")
                 .queryParam("noinfo")
-                .queryParam("results", 2)
+                .queryParam("results", amount)
                 .get()
                 .as(ResponseDto.class);
         Assert.assertFalse(responseDto.getResults().isEmpty(),
                 "At least one user must be retrieved!");
-        randomPersons = responseDto.getResults();
+        DataHolder.dataHolder.put(alias, responseDto.getResults());
     }
 }

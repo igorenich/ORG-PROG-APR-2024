@@ -3,6 +3,7 @@ package org.prog.cucumber.steps;
 import com.mysql.cj.jdbc.Driver;
 import io.cucumber.java.en.Given;
 import org.prog.dto.PersonDto;
+import org.prog.util.DataHolder;
 import org.testng.Assert;
 
 import java.sql.*;
@@ -17,14 +18,14 @@ public class DBSteps {
 
     public static String randomUserName;
 
-    @Given("i store random people from randomuser.me")
-    public void requestAndStoreRandomUsers() throws SQLException {
-        Assert.assertNotNull(RestSteps.randomPersons,
+    @Given("i store group {string} from randomuser.me to DB")
+    public void requestAndStoreRandomUsers(String alias) throws SQLException {
+        Assert.assertNotNull(DataHolder.dataHolder.get(alias),
                 "Please, use 'requestRandomPeople' step before storing random users to DB");
         Connection connection = null;
         Statement statement = null;
         try {
-            List<PersonDto> randomPersons = RestSteps.randomPersons;
+            List<PersonDto> randomPersons = (List<PersonDto>) DataHolder.dataHolder.get(alias);
 
             DriverManager.registerDriver(new Driver());
             connection = DriverManager.getConnection(
@@ -57,8 +58,8 @@ public class DBSteps {
         }
     }
 
-    @Given("i pick random user from DB")
-    public void pickRandomUser() throws SQLException {
+    @Given("i pick random user from DB as {string}")
+    public void pickRandomUser(String alias) throws SQLException {
         Connection connection = null;
         Statement statement = null;
         try {
@@ -69,10 +70,8 @@ public class DBSteps {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(SELECT_RANDOM);
             while (resultSet.next()) {
-                randomUserName =
-                        resultSet.getString("FirstName") +
-                                " " +
-                                resultSet.getString("LastName");
+                DataHolder.dataHolder.put(alias, resultSet.getString("FirstName") +
+                        " " + resultSet.getString("LastName"));
             }
         } finally {
             if (statement != null) {
