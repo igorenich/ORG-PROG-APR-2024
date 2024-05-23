@@ -14,7 +14,7 @@ Feature: Integration of Web, REST and DB technologies
       | 2     |
 
   @severity=critical
-  Scenario: Google search test
+  Scenario: Google celebrity search test
     Given i load google page
     Given my test user "celebrity" is "Ben Affleck"
     When i search for "celebrity"
