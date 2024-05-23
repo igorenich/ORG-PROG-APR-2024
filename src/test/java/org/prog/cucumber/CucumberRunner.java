@@ -21,9 +21,8 @@ import java.util.HashMap;
         glue = "org.prog.cucumber.steps",
         plugin = {"pretty",
                 "json:target/cucumber-reports/Cucumber.json",
-                "html:target/cucumber-report.html"
-//                ,
-//                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
+                "html:target/cucumber-report.html",
+                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
         }
 )
 public class CucumberRunner extends AbstractTestNGCucumberTests {
