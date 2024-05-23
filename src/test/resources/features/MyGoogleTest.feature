@@ -1,5 +1,6 @@
 Feature: Integration of Web, REST and DB technologies
 
+  @severity=minor
   Scenario Template: Google search test
     Given i request <amout> random people from randomuser.me as "group_A"
     Given i store group "group_A" from randomuser.me to DB
@@ -12,6 +13,7 @@ Feature: Integration of Web, REST and DB technologies
       | 1     |
       | 2     |
 
+  @severity=critical
   Scenario: Google search test
     Given i load google page
     Given my test user "celebrity" is "Ben Affleck"
