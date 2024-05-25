@@ -1,28 +1,19 @@
 package org.prog.web;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.time.Duration;
 import java.util.List;
 
 public class AlloUaTest {
-
-    /*
-        0. Make it parametrized test. Set search text as parameter: iPhone, Xiaomi, sennheiser
-        1. load allo.ua
-        2. search for paramter from DataProvider (webElement.sendKeys("phone name") then webElement.sentKeys(Keys.ENTER))
-        3. Assert length of names for first 4 phones (webElement.getText()) > 0
-     */
 
     private WebDriver driver;
 
@@ -42,6 +33,33 @@ public class AlloUaTest {
     public void preTest() {
         Assert.assertNotNull(driver, "Driver has not been initialized!");
         driver.get("https://allo.ua/");
+    }
+
+    @DataProvider(name = "searchData")
+    public Object[][] searchData() {
+        return new Object[][]{
+                {"iPhone"},
+                {"Xiaomi"},
+                {"sennheiser"}
+        };
+    }
+
+    @Test(dataProvider = "searchData")
+    public void testSearchForPhone(String searchText) {
+        WebElement searchBox = driver.findElement(By.name("search"));
+        searchBox.sendKeys(searchText);
+        searchBox.sendKeys(Keys.ENTER);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("product-card__content")));
+
+        List<WebElement> productCards = driver.findElements(By.className("product-card__content"));
+
+        for (int i = 0; i < 4 && i < productCards.size(); i++) {
+            WebElement productTitle = productCards.get(i).findElement(By.className("product-card__title"));
+            String title = productTitle.getText();
+            Assert.assertTrue(title.length() > 0, "Product title should have a length greater than 0");
+        }
     }
 
     @Test
