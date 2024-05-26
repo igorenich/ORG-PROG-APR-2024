@@ -1,6 +1,7 @@
 package org.prog.web;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -11,58 +12,78 @@ import java.util.List;
 
 public class AlloUaPage {
 
-
-
-    private WebDriver driver;
-    private WebDriverWait driverWait;
-
-    private PromoSideBarPage promoSideBarPage;
-    private PromoItemsPage promoItemsPage;
+    private final WebDriver driver;
+    private final WebDriverWait driverWait;
+    private String firstProductPrice;
 
     public AlloUaPage(WebDriver driver) {
         this.driver = driver;
-        this.promoSideBarPage = new PromoSideBarPage(driver);
-        this.promoItemsPage = new PromoItemsPage(driver);
-        driverWait = new WebDriverWait(driver, Duration.ofSeconds(3L));
+        this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(60));
     }
 
     public void loadPage() {
         driver.get("https://allo.ua/");
     }
 
-    public void openDiscounts() {
-        WebElement discountsBtn = driver.findElement(By.partialLinkText("Акції"));
-        discountsBtn.click();
+    public void searchForGoods(String searchValue) {
+        WebElement searchInput = driver.findElement(By.id("search-form__input"));
+        searchInput.sendKeys(searchValue);
+        searchInput.sendKeys(Keys.ENTER);
     }
 
-    public void openPresents() {
-        promoSideBarPage.selectPromoByName("Подарунки");
+    public void waitForSearchResultsToBeAtLeast(int count) {
+        driverWait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.className("product-card"), count));
     }
 
-    public List<WebElement> getPromoItems() {
-        return promoItemsPage.getPromoItems();
+    public List<WebElement> getSearchResults() {
+        return driver.findElements(By.className("products-layout__item"));
     }
 
-    public String getPromoTitle() {
-        WebElement promoTitle = driver.findElement(By.className("promo-info__title"));
-        return promoTitle.getText();
+    public String getGoodsPrice(WebElement goodsElement) {
+        WebElement priceElement = goodsElement.findElement(By.className("v-pb__cur"));
+        return priceElement.findElement(By.className("sum")).getText();
     }
 
-    public void openLoginForm() {
-        WebElement profileBtn = driver.findElement(By.className("mh-profile"));
-        profileBtn.click();
-        WebElement pwdBtnWait = driverWait.until(
-                ExpectedConditions.presenceOfElementLocated(By.className("auth__enter-password")));
-        pwdBtnWait.click();
+    public void openFirstProductPage() {
+        List<WebElement> searchResults = getSearchResults();
+        if (!searchResults.isEmpty()) {
+            WebElement firstProduct = searchResults.get(0);
+            firstProduct.click();
+        }
     }
 
-    public void clickLoginButton() {
-        WebElement loginBtn = driverWait.until(
-                ExpectedConditions.presenceOfElementLocated(By.className("a-button--primary")));
-        loginBtn.click();
+    public String getProductPagePrice() {
+        WebElement priceElement = driverWait.until(ExpectedConditions.visibilityOfElementLocated(By.className("v-pb__cur")));
+        return priceElement.findElement(By.className("sum")).getText();
     }
 
-    public List<WebElement> getErrorElements() {
-        return driver.findElements(By.className("a-input__message"));
+    public String getProductTitle() {
+        WebElement titleElement = driverWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h1.product-name")));
+        return titleElement.getText();
+    }
+
+    public void comparePrices() {
+        System.out.println("First product price from search results: " + firstProductPrice);
+        String productPagePrice = getProductPagePrice();
+        System.out.println("Product page price: " + productPagePrice);
+        System.out.println("Product title: " + getProductTitle());
+
+        if (firstProductPrice.equals(productPagePrice)) {
+            System.out.println("Prices match!");
+        } else {
+            System.out.println("Prices do not match!");
+        }
+    }
+
+    public void saveFirstProductPrice() {
+        List<WebElement> searchResults = getSearchResults();
+        if (!searchResults.isEmpty()) {
+            WebElement firstProduct = searchResults.get(0);
+            firstProductPrice = getGoodsPrice(firstProduct);
+        }
+    }
+
+    public List<WebElement> getHomePageSales() {
+        return driver.findElements(By.className("h-pc"));
     }
 }

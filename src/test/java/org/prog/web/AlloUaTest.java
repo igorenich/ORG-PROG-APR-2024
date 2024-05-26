@@ -1,11 +1,10 @@
 package org.prog.web;
 
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
@@ -13,55 +12,45 @@ import java.util.List;
 
 public class AlloUaTest {
 
-    /*
-        1. Refactor tests to use PageObject pattern
-        2. Pick 1st item among first 4 items
-        3. "Store" its price (as variable)
-        4. Go to goods page
-        5. Assert that page price is same as "stored" price
-     */
-
     private WebDriver driver;
-
     private AlloUaPage alloUaPage;
 
     @BeforeSuite
     public void setUp() {
-        this.driver = new ChromeDriver();
-        this.alloUaPage = new AlloUaPage(driver);
-        driver.manage().window().maximize();
+        driver = new ChromeDriver();
+        alloUaPage = new AlloUaPage(driver);
+    }
+
+    @Test
+    public void testSearchAndComparePrice() {
+        alloUaPage.loadPage();
+        alloUaPage.searchForGoods("Xiaomi");
+        alloUaPage.waitForSearchResultsToBeAtLeast(1);
+
+        List<WebElement> searchResults = alloUaPage.getSearchResults();
+        WebElement firstProduct = searchResults.get(0);
+        String firstProductPrice = alloUaPage.getGoodsPrice(firstProduct);
+
+        System.out.println("First product price from search results: " + firstProductPrice);
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        alloUaPage.openFirstProductPage();
+
+        String productPagePrice = alloUaPage.getProductPagePrice();
+        System.out.println("Product page price: " + productPagePrice);
+
+        Assert.assertEquals(firstProductPrice, productPagePrice, "The price on the search page does not match the price on the product page!");
     }
 
     @AfterSuite
     public void tearDown() {
-        Assert.assertNotNull(driver, "Driver has not been initialized!");
-        driver.quit();
-    }
-
-    @BeforeMethod
-    public void preTest() {
-        Assert.assertNotNull(driver, "Driver has not been initialized!");
-        alloUaPage.loadPage();
-    }
-
-    @Test
-    public void testPromoInfo() {
-        alloUaPage.openDiscounts();
-        alloUaPage.openPresents();
-        List<WebElement> promoItems = alloUaPage.getPromoItems();
-        promoItems.get(0).click();
-        String title = alloUaPage.getPromoTitle();
-        Assert.assertNotNull(title, "Promo title must not be null");
-    }
-
-    @Test
-    public void checkLoginFormTest() {
-        alloUaPage.openLoginForm();
-        alloUaPage.clickLoginButton();
-        List<WebElement> errorMessages = alloUaPage.getErrorElements();
-        for (WebElement em : errorMessages) {
-            Assert.assertEquals(em.getText(),
-                    "Це поле є обов'язковим для заповнення.", "Bad error message!");
+        if (driver != null) {
+            driver.quit();
         }
     }
 }
