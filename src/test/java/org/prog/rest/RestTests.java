@@ -5,30 +5,23 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
+import org.prog.dto.LocationDto;
+import org.prog.dto.PersonDto;
 import org.prog.dto.ResponseDto;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class RestTests {
 
-    /**
-     * HOMEWORK 8:
-     * 1. call https://randomuser.me/api/?inc=gender,name,nat,location&noinfo
-     * 2. Add location object with all details to PersonDto
-     * 3. Add assertion that validates location.timezone.description is not empty
-     */
-
     @Test
     public void restTest() {
         RequestSpecification requestSpecification = RestAssured.given();
         requestSpecification.baseUri("https://randomuser.me/");
         requestSpecification.basePath("api/");
-        requestSpecification.queryParam("inc", "gender,name,nat");
-//TODO: UNCOMMENT >>>> requestSpecification.queryParam("inc", "gender,name,nat,location");
+        requestSpecification.queryParam("inc", "gender,name,nat,location");
         requestSpecification.queryParam("noinfo");
 
         Response response = requestSpecification.get();
-//TODO: SAMPLE>>> String[] names = response.jsonPath().get("results.name.first");
         response.prettyPrint();
 
         ValidatableResponse validatableResponse = response.then();
@@ -38,6 +31,13 @@ public class RestTests {
         ResponseDto responseDto = response.as(ResponseDto.class);
         Assert.assertFalse(responseDto.getResults().isEmpty(),
                 "No persons generated! Failing test,");
+
+        // Перевірка, що опис часового поясу не є пустим
+        for (PersonDto person : responseDto.getResults()) {
+            LocationDto location = person.getLocation();
+            Assert.assertNotNull(location.getTimezone().getDescription(),
+                    "Timezone description is empty!");
+        }
     }
 
     @Test
@@ -45,7 +45,7 @@ public class RestTests {
         RestAssured.given()
                 .baseUri("https://randomuser.me/")
                 .basePath("api/")
-                .queryParam("inc", "gender,name,nat")
+                .queryParam("inc", "gender,name,nat,location")
                 .queryParam("noinfo")
                 .get()
                 .then()
